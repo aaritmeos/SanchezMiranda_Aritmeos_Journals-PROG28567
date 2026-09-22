@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.U2D;
 
 public class Player : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Player : MonoBehaviour
     public Vector2 bombOffset; //Public Vector to modify how far is the bomb from the Player
     public float bombTrailSpacing; //public float to determine space between bombs
     public int numberOfTrailBombs; //public int to determine number of bombs
+    public float cornerDistance; //public float to determine the distance from Player to corner where bomb spawns
 
     // Update is called once per frame
     void Update()
@@ -22,6 +24,10 @@ public class Player : MonoBehaviour
         if (Keyboard.current.tKey.wasPressedThisFrame) //run SpawnBombTrail when T is pressed
         {
             SpawnBombTrail(bombTrailSpacing, numberOfTrailBombs); //bombTrailSpacing and numberOfTrailBombs as arguments
+        }
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            SpawnBombOnRandomCorner(cornerDistance);
         }
     }
 
@@ -39,6 +45,27 @@ public class Player : MonoBehaviour
             //Use spacing to distance bombs from player and themselves
             Instantiate(bombPrefab, transform.position + new Vector3 (0, spacing, 0), Quaternion.identity); 
             spacing = spacing + inBombSpacing; //add inBombSpacing to spacing each time the loop runs to keep consistent separation
+        }
+    }
+    public void SpawnBombOnRandomCorner(float inDistance) //method to spawn bomb at a random corner of the Player
+    {
+        float corner = Random.Range(0, 4);//get a random number from 0 to 3
+
+        if(corner == 0)//if corner = 0, instantiate bomb at top right corner
+        {
+            Instantiate(bombPrefab, transform.position + new Vector3(inDistance, inDistance, 0), Quaternion.identity);
+        }
+        else if (corner == 1)//if corner = 1, instantiate bomb at top left corner
+        {
+            Instantiate(bombPrefab, transform.position + new Vector3(-inDistance, inDistance, 0), Quaternion.identity);
+        }
+        else if (corner == 2)//if corner = 0, instantiate bomb at bottom right corner
+        {
+            Instantiate(bombPrefab, transform.position + new Vector3(inDistance, -inDistance, 0), Quaternion.identity);
+        }
+        else if (corner == 3)//if corner = 0, instantiate bomb at bottom corner
+        {
+            Instantiate(bombPrefab, transform.position + new Vector3(-inDistance, -inDistance, 0), Quaternion.identity);
         }
     }
 }
