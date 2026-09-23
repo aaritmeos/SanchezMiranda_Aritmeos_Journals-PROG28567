@@ -14,7 +14,8 @@ public class Player : MonoBehaviour
     public float bombTrailSpacing; //public float to determine space between bombs
     public int numberOfTrailBombs; //public int to determine number of bombs
     public float cornerDistance; //public float to determine the distance from Player to corner where bomb spawns
-    public float warpRatio;
+    public float warpRatio; //ratio for the player to warp between itself and an object
+    public float maxRange; //how close to the player does an asteroid need to be to be detected
 
     // Update is called once per frame
     void Update()
@@ -35,12 +36,17 @@ public class Player : MonoBehaviour
         {
             WarpPlayer(enemyTransform, warpRatio); //enemyTransform and warpRatio as arguments
         }
+        DetectAsteroids(maxRange, asteroidTransforms);
     }
 
     IEnumerator SpawnBombAtOffset(Vector3 inOffset) //Coroutine that spawns a bomb at a distance from the player
     {
         yield return new WaitForSeconds(3); //wait 3 seconds, then Instantiate
         Instantiate(bombPrefab, transform.position + inOffset, Quaternion.identity); //use inOffset to distance bomb from the player
+    }
+    public Vector2 Normie(Vector2 weirdo)
+    {
+        return weirdo.normalized;
     }
 
     public void SpawnBombTrail (float inBombSpacing, int inNumberOfBombs) //method to spawn bomb trail at a distance from the player
@@ -84,6 +90,17 @@ public class Player : MonoBehaviour
         else if (ratio > 1) //if ratio is greater than 1, don't do anything
         {
 
+        }
+    }
+    public void DetectAsteroids(float inMaxRange, List<Transform> inAsteroids) //method to check for asteroids nearby the player
+    {
+        foreach (Transform asteroidTransforms  in inAsteroids) //check every asteroid transform in the player's list
+        {
+            if (Vector3.Distance(transform.position, asteroidTransforms.position) < inMaxRange) //run code if one of the asteroids is close to the player
+            {
+                Vector2 normalDistance = Normie(asteroidTransforms.position - transform.position) * 2.5f; //calculate and normalize the distance between the asteroid and the player
+                Debug.DrawLine(transform.position, transform.position + (Vector3)normalDistance, Color.green); //draw a line from the player to the asteroid
+            }
         }
     }
 }
