@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
     }
     public void DetectAsteroids(float inMaxRange, List<Transform> inAsteroids) //method to check for asteroids nearby the player
     {
-        foreach (Transform asteroidTransforms  in inAsteroids) //check every asteroid transform in the player's list
+        foreach (Transform asteroidTransforms in inAsteroids) //check every asteroid transform in the player's list
         {
             if (Vector3.Distance(transform.position, asteroidTransforms.position) < inMaxRange) //run code if one of the asteroids is close to the player
             {
