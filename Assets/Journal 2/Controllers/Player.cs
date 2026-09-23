@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.U2D;
 
 public class Player : MonoBehaviour
@@ -13,6 +14,7 @@ public class Player : MonoBehaviour
     public float bombTrailSpacing; //public float to determine space between bombs
     public int numberOfTrailBombs; //public int to determine number of bombs
     public float cornerDistance; //public float to determine the distance from Player to corner where bomb spawns
+    public float warpRatio;
 
     // Update is called once per frame
     void Update()
@@ -25,9 +27,13 @@ public class Player : MonoBehaviour
         {
             SpawnBombTrail(bombTrailSpacing, numberOfTrailBombs); //bombTrailSpacing and numberOfTrailBombs as arguments
         }
-        if (Keyboard.current.rKey.wasPressedThisFrame)
+        if (Keyboard.current.rKey.wasPressedThisFrame) //run SpawnBombOnRandomCorner when R is pressed
         {
-            SpawnBombOnRandomCorner(cornerDistance);
+            SpawnBombOnRandomCorner(cornerDistance); //cornerDistance as argument
+        }
+        if (Keyboard.current.wKey.wasPressedThisFrame) //run WarpPlayer when W is pressed
+        {
+            WarpPlayer(enemyTransform, warpRatio); //enemyTransform and warpRatio as arguments
         }
     }
 
@@ -66,6 +72,18 @@ public class Player : MonoBehaviour
         else if (corner == 3)//if corner = 0, instantiate bomb at bottom corner
         {
             Instantiate(bombPrefab, transform.position + new Vector3(-inDistance, -inDistance, 0), Quaternion.identity);
+        }
+    }
+    public void WarpPlayer(Transform target, float ratio)
+    {
+        Vector3 direction = target.position - transform.position;
+        if (ratio <= 1)
+        {
+            transform.position += direction * ratio;
+        } 
+        else if (ratio > 1)
+        {
+
         }
     }
 }
