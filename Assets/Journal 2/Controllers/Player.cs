@@ -74,14 +74,14 @@ public class Player : MonoBehaviour
             Instantiate(bombPrefab, transform.position + new Vector3(-inDistance, -inDistance, 0), Quaternion.identity);
         }
     }
-    public void WarpPlayer(Transform target, float ratio)
+    public void WarpPlayer(Transform target, float ratio) //method to teleport the player a proportional distance between itself and the target
     {
-        Vector3 direction = target.position - transform.position;
-        if (ratio <= 1)
+        Vector3 direction = target.position - transform.position; //calculate distance between player and target
+        if (ratio <= 1) //move player only if value of ratio is 1 or less
         {
-            transform.position += direction * ratio;
+            transform.position += direction * ratio; //formula to move player
         } 
-        else if (ratio > 1)
+        else if (ratio > 1) //if ratio is greater than 1, don't do anything
         {
 
         }
