@@ -16,10 +16,22 @@ public class Player : MonoBehaviour
     public float cornerDistance; //public float to determine the distance from Player to corner where bomb spawns
     public float warpRatio; //ratio for the player to warp between itself and an object
     public float maxRange; //how close to the player does an asteroid need to be to be detected
+    public float maxSpeed;
+    public float accelerationTime;
+
+    private float acceleration;
+    private Vector3 velocity;
+
+    private void Start()
+    {
+        acceleration = maxSpeed / accelerationTime;
+    }
 
     // Update is called once per frame
     void Update()
     {
+        PlayerMovement();
+
         if (Keyboard.current.bKey.wasPressedThisFrame) //run SpawnBombAtOffset Coroutine when B is pressed
         {
             StartCoroutine(SpawnBombAtOffset(bombOffset)); //bombOffset Vector as argument
@@ -102,5 +114,28 @@ public class Player : MonoBehaviour
                 Debug.DrawLine(transform.position, transform.position + (Vector3)normalDistance, Color.green); //draw a line from the player to the asteroid
             }
         }
+    }
+    public void PlayerMovement()
+    {
+
+        if (Keyboard.current.upArrowKey.isPressed)
+        {
+            velocity += acceleration * Time.deltaTime * Vector3.up;
+        }
+        if (Keyboard.current.downArrowKey.isPressed)
+        {
+            velocity += acceleration * Time.deltaTime * Vector3.down;
+        }
+        if (Keyboard.current.rightArrowKey.isPressed)
+        {
+            velocity += acceleration * Time.deltaTime * Vector3.right;
+        }
+        if (Keyboard.current.leftArrowKey.isPressed)
+        {
+            velocity += acceleration * Time.deltaTime * Vector3.left;
+        }
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+        transform.position += velocity * Time.deltaTime;
+        Debug.Log(velocity.magnitude);
     }
 }
