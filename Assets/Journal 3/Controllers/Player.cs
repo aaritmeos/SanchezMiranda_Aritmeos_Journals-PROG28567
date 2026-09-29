@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -16,15 +17,17 @@ public class Player : MonoBehaviour
     public float cornerDistance; //public float to determine the distance from Player to corner where bomb spawns
     public float warpRatio; //ratio for the player to warp between itself and an object
     public float maxRange; //how close to the player does an asteroid need to be to be detected
-    public float maxSpeed;
-    public float accelerationTime;
-
-    private float acceleration;
-    private Vector3 velocity;
+    public float maxSpeed; //max speed the player can reach
+    public float accelerationTime; //how long does it take for the player to reach max speed
+    public float decelerationTime; //how long does it take for the player to go back to 0 speed
+    private float acceleration; //how much speed does the player gain per second
+    private float deceleration; //how much speed does the player lose per second
+    private Vector3 velocity; //player's speed
 
     private void Start()
     {
-        acceleration = maxSpeed / accelerationTime;
+        acceleration = maxSpeed / accelerationTime; //calculate acceleration
+        deceleration = maxSpeed / decelerationTime; //calculate deceleration
     }
 
     // Update is called once per frame
@@ -61,13 +64,13 @@ public class Player : MonoBehaviour
         return weirdo.normalized;
     }
 
-    public void SpawnBombTrail (float inBombSpacing, int inNumberOfBombs) //method to spawn bomb trail at a distance from the player
+    public void SpawnBombTrail(float inBombSpacing, int inNumberOfBombs) //method to spawn bomb trail at a distance from the player
     {
         float spacing = inBombSpacing; //float that determines the distance between bombs
         for (int i = 0; i < inNumberOfBombs; i++) //loop uses inNumberOfBombs as limit
         {
             //Use spacing to distance bombs from player and themselves
-            Instantiate(bombPrefab, transform.position + new Vector3 (0, spacing, 0), Quaternion.identity); 
+            Instantiate(bombPrefab, transform.position + new Vector3(0, spacing, 0), Quaternion.identity);
             spacing = spacing + inBombSpacing; //add inBombSpacing to spacing each time the loop runs to keep consistent separation
         }
     }
@@ -75,7 +78,7 @@ public class Player : MonoBehaviour
     {
         float corner = Random.Range(0, 4);//get a random number from 0 to 3
 
-        if(corner == 0)//if corner = 0, instantiate bomb at top right corner
+        if (corner == 0)//if corner = 0, instantiate bomb at top right corner
         {
             Instantiate(bombPrefab, transform.position + new Vector3(inDistance, inDistance, 0), Quaternion.identity);
         }
@@ -98,7 +101,7 @@ public class Player : MonoBehaviour
         if (ratio <= 1) //move player only if value of ratio is 1 or less
         {
             transform.position += direction * ratio; //formula to move player
-        } 
+        }
         else if (ratio > 1) //if ratio is greater than 1, don't do anything
         {
 
@@ -134,8 +137,14 @@ public class Player : MonoBehaviour
         {
             velocity += acceleration * Time.deltaTime * Vector3.left;
         }
+        else
+        {
+            velocity -= deceleration * Time.deltaTime * velocity.normalized;
+        }
         velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+        
         transform.position += velocity * Time.deltaTime;
-        Debug.Log(velocity.magnitude);
     }
+
+
 }
