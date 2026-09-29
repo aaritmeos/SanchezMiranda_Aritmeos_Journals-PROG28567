@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     public float maxSpeed; //max speed the player can reach
     public float accelerationTime; //how long does it take for the player to reach max speed
     public float decelerationTime; //how long does it take for the player to go back to 0 speed
+    public float radarRadius = 3f;
+    public int radarSideCount = 8;
     private float acceleration; //how much speed does the player gain per second
     private float deceleration; //how much speed does the player lose per second
     private Vector3 velocity; //player's speed
@@ -27,13 +29,14 @@ public class Player : MonoBehaviour
     private void Start()
     {
         acceleration = maxSpeed / accelerationTime; //calculate acceleration
-        deceleration = maxSpeed / decelerationTime; //calculate deceleration
+        deceleration = maxSpeed / decelerationTime; //calculate deceleration       
     }
 
     // Update is called once per frame
     void Update()
     {
         PlayerMovement();
+        PlayerRadar (radarRadius, radarSideCount);
 
         if (Keyboard.current.bKey.wasPressedThisFrame) //run SpawnBombAtOffset Coroutine when B is pressed
         {
@@ -145,6 +148,37 @@ public class Player : MonoBehaviour
         
         transform.position += velocity * Time.deltaTime;
     }
+    private void PlayerRadar(float radius, int numberOfSides)
+    {
+        float stepAngle = 360.0f / numberOfSides;
+        List<Vector3> points = new();
 
+        stepAngle *= Mathf.Deg2Rad;
+        float currentAngle = stepAngle;
 
+        for (int i = 0; i < numberOfSides; i++)
+        {
+            float xPos = Mathf.Cos(currentAngle) * radius;
+            float yPos = Mathf.Sin(currentAngle) * radius;
+
+            Vector3 newPoint = new Vector3(xPos, yPos, 0);
+            points.Add(newPoint);
+
+            currentAngle += stepAngle;
+        }
+        for (int i = 0;i < numberOfSides - 1; i++)
+        {
+            Vector3 startPoint = transform.position + points[i];
+            Vector3 endPoint = transform.position + points[i + 1];
+
+            Debug.DrawLine(startPoint, endPoint, Color.green);
+            if (i == numberOfSides - 2)
+            {
+                startPoint = transform.position + points[i + 1];
+                endPoint = transform.position + points[0];
+
+                Debug.DrawLine(startPoint, endPoint, Color.green);
+            }
+        }
+    }
 }
