@@ -125,15 +125,15 @@ public class Player : MonoBehaviour
         {
             velocity += acceleration * Time.deltaTime * Vector3.up;
         }
-        if (Keyboard.current.downArrowKey.isPressed)
+        else if (Keyboard.current.downArrowKey.isPressed)
         {
             velocity += acceleration * Time.deltaTime * Vector3.down;
         }
-        if (Keyboard.current.rightArrowKey.isPressed)
+        else if (Keyboard.current.rightArrowKey.isPressed)
         {
             velocity += acceleration * Time.deltaTime * Vector3.right;
         }
-        if (Keyboard.current.leftArrowKey.isPressed)
+        else if (Keyboard.current.leftArrowKey.isPressed)
         {
             velocity += acceleration * Time.deltaTime * Vector3.left;
         }
