@@ -28,7 +28,7 @@ public class Asteroid : MonoBehaviour
     public void AsteroidMovement()
     {
         float magnitude = Vector3.Magnitude(target - transform.position);
-        if (magnitude < arrivalDistance);
+        if (magnitude < arrivalDistance == true) ;
         {
             xPos = Random.Range(transform.position.x, transform.position.x + maxFloatDistance);
             yPos = Random.Range(transform.position.y, transform.position.y + maxFloatDistance);
