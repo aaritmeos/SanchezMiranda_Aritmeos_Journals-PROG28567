@@ -185,22 +185,22 @@ public class Player : MonoBehaviour
     #endregion
 
     #region PowerUps
-    public void SpawnPowerups(float radius, int inNumberOfPowerups)
+    public void SpawnPowerups(float radius, int inNumberOfPowerups) //method to spawn power ups
     {
-        if (Keyboard.current.pKey.wasPressedThisFrame)
+        if (Keyboard.current.pKey.wasPressedThisFrame) //run when p key was pressed
         {
-            float stepAngle = 360f / inNumberOfPowerups;
-            stepAngle *= Mathf.Deg2Rad;
-            float currentAngle = stepAngle;
+            float stepAngle = 360f / inNumberOfPowerups; //divide 360 by number of power ups to know the angle between power ups
+            stepAngle *= Mathf.Deg2Rad; //transform step angle to radians
+            float currentAngle = stepAngle; //make current angle same value as step angle
 
-            for (int i = 0; i < inNumberOfPowerups; i++)
+            for (int i = 0; i < inNumberOfPowerups; i++) //run a number of times equal to number of power ups
             {
-                float xPos = Mathf.Cos(currentAngle) * radius;
-                float yPos = Mathf.Sin(currentAngle) * radius;
-                Vector3 newPos = new Vector3(xPos, yPos, 0);
-                Instantiate(powerupPrefab, transform.position + newPos, Quaternion.identity);
+                float xPos = Mathf.Cos(currentAngle) * radius; //make x pos the cosine of current angle by radius
+                float yPos = Mathf.Sin(currentAngle) * radius; //make y pos the sine of current angle by radius
+                Vector3 newPos = new Vector3(xPos, yPos, 0); //use xPos and yPos as arguments of newPos
+                Instantiate(powerupPrefab, transform.position + newPos, Quaternion.identity); //spawn PowerUp using newPos as its offset
 
-                currentAngle += stepAngle;
+                currentAngle += stepAngle; //increment currentAngle by stepAngle
             }
         }
     }
