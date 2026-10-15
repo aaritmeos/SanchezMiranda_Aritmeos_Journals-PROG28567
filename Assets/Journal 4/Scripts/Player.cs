@@ -53,6 +53,10 @@ public class Player : MonoBehaviour
     public float cornerDistance; //public float to determine the distance from Player to corner where bomb spawns
     #endregion
 
+    #region ExplodingBomb variables
+    private GameObject copyBomb; //make a Game Object to hold the bomb prefab and affect indirectly
+    #endregion
+
     private void Start()
     {
         acceleration = maxSpeed / accelerationTime; //calculate acceleration
@@ -78,6 +82,8 @@ public class Player : MonoBehaviour
 
         #region Bombs
         StartCoroutine(SpawnBombAtOffset(bombOffset)); //always run SpawnBombAtOffset, bombOffset Vector as argument
+        StartCoroutine(ExplodingBomb(bombPrefab)); //always run ExplodingBomb, bombPrefab Vector as argument
+        copyBomb.transform.position += Vector3.up * Time.deltaTime; //make the copyBomb spawned by Exploding Bomb move forward
         SpawnBombTrail(bombTrailSpacing, numberOfTrailBombs); //always run SpawnBombTrail, bombTrailSpacing and numberOfTrailBombs as arguments        
         SpawnBombOnRandomCorner(cornerDistance); //always run SpawnBombOnRandomCorner, cornerDistance as argument
         #endregion
@@ -213,6 +219,18 @@ public class Player : MonoBehaviour
         {
             yield return new WaitForSeconds(3); //wait 3 seconds, then Instantiate
             Instantiate(bombPrefab, transform.position + inOffset, Quaternion.identity); //use inOffset to distance bomb from the player
+        }
+    }
+
+    IEnumerator ExplodingBomb(GameObject bomb) //Coroutine that shoots a bomb from the player, and makes it explode after some time
+    {
+        if (Keyboard.current.xKey.wasPressedThisFrame) // run when x Key was pressed
+        {
+            copyBomb = Instantiate(bomb, transform.position + Vector3.up, Quaternion.identity); //Make copyBomb the bomb prefeab instantiated in front of the player
+            yield return new WaitForSeconds(2); //wait 2 seconds
+            copyBomb.transform.localScale = new Vector3(2, 2, 2); //augment the size of the bomb
+            yield return new WaitForSeconds(1); //wait 1 second
+            Destroy(copyBomb); //destroy it
         }
     }
     public void SpawnBombTrail(float inBombSpacing, int inNumberOfBombs) //method to spawn bomb trail at a distance from the player
