@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.U2D;
+using static UnityEngine.GraphicsBuffer;
 
 public class Player : MonoBehaviour
 {
@@ -57,6 +58,13 @@ public class Player : MonoBehaviour
     private GameObject copyBomb; //make a Game Object to hold the bomb prefab and affect indirectly
     #endregion
 
+    #region RotatingPowerUp variables
+    public Transform powerShield; //variable to get the sepcific power up prefab
+    public float orbit; //variable to calculate the position of the powerup around the player
+    public float powerRadius; //variable to check the distance between the player and the powerup
+    public float powerSpeed; //variable to check how fast the power up orbits the player
+    #endregion
+
     private void Start()
     {
         acceleration = maxSpeed / accelerationTime; //calculate acceleration
@@ -78,6 +86,7 @@ public class Player : MonoBehaviour
 
         #region PowerUps
         SpawnPowerups(powerUpRadius, numberOfPowerups); //always run SpawnPowerups, with powerUpRadius and numberOfPowerUps as arguments
+        RotatingPowerUp(powerShield, powerRadius, powerSpeed); //always run RotatingPowerUp, with powerShield, powerRadius and powerSpeed as arguments
         #endregion
 
         #region Bombs
@@ -209,6 +218,18 @@ public class Player : MonoBehaviour
                 currentAngle += stepAngle; //increment currentAngle by stepAngle
             }
         }
+    }
+    public void RotatingPowerUp(Transform powerUp, float radius, float speed) //method to make a power up orbit around the player
+    {
+        orbit += Time.deltaTime * speed; //increase orbit constantly
+        if (orbit > 360f) //if orbit reaches 360, make it 0
+        {
+            orbit = 0f;
+        }
+        float xPos = (Mathf.Cos(orbit) * radius) + transform.position.x; //constantly calculate the Cosine of orbit multiplied by radius, and add it to the player's transform's position
+        float yPos = (Mathf.Sin(orbit) * radius) + transform.position.y; //constantly calculate the Sine of orbit multiplied by radius, and add it to the player's transform's position
+        Vector3 orbitPos = new Vector3(xPos, yPos, 0); //assign xPos and yPos as arguments of orbitPos
+        powerUp.position = orbitPos; //make the powerUp's position equal to orbitPos
     }
     #endregion
 
